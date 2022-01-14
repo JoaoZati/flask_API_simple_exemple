@@ -23,8 +23,18 @@ def calc():
 @app.route('/json')
 def simple_json():
     json_ex = {
-        'field_1': 'abc',
-        'field_2': 'def'
+        'Name': 'joao',
+        'Age': 27,
+        "phones": [
+            {
+                'phone_name': 'Xaiomi',
+                'phone_number': 11111
+            },
+            {
+                'phone_name': 'Iphone',
+                'phone_number': 22222
+            },
+        ]
     }
     return jsonify(json_ex)
 
