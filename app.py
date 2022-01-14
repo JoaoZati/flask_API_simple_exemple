@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, jsonify
 
 app = Flask(__name__)
 
@@ -18,6 +18,15 @@ def calc():
     # prepare a response
     c = 200 * 3.14
     return f'{str(c)}'
+
+
+@app.route('/json')
+def simple_json():
+    json_ex = {
+        'field_1': 'abc',
+        'field_2': 'def'
+    }
+    return jsonify(json_ex)
 
 
 if __name__ == '__main__':
