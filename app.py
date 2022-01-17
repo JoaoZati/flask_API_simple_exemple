@@ -1,6 +1,8 @@
 from flask import Flask, jsonify, request
+from flask_restful import Api, Resource
 
 app = Flask(__name__)
+api = Api(app)
 
 
 @app.route('/')
@@ -8,54 +10,48 @@ def hello_word():
     return 'Hello Word'
 
 
-@app.route('/hithere')
-def hi_there():
-    return 'Hi there'
+class Add(Resource):
+    def post(self):
+        # if i'm here, the resource add was requested using the method POST
+
+        # Step 1: get the json data and manage errors
+        try:
+            post_data = request.get_json()
+
+            x = float(post_data['x'])
+            y = float(post_data['y'])
+        except Exception as e:
+            print(e)
+            json_data = {
+                'Message': f'ERROR: {e}',
+                'Status Code': 301
+            }
+            return jsonify(json_data)
+
+        # Step 3: do the calculation
+        result = x + y
+
+        # step 4: Create Json response and send
+        json_data = {
+            "Message": result,
+            "Status Code": 200,
+        }
+        return jsonify(json_data)
 
 
-@app.route('/calc')
-def calc():
-    # prepare a response
-    c = 200 * 3.14
-    return f'{str(c)}'
+class Subtract(Resource):
+    pass
 
 
-@app.route('/json')
-def simple_json():
-    json_ex = {
-        'Name': 'joao',
-        'Age': 27,
-        "phones": [
-            {
-                'phone_name': 'Xaiomi',
-                'phone_number': 11111
-            },
-            {
-                'phone_name': 'Iphone',
-                'phone_number': 22222
-            },
-        ]
-    }
-    return jsonify(json_ex)
+class Multiply(Resource):
+    pass
 
 
-@app.route('/add_two_numbers', methods=["POST"])
-def add_two_numbers():
-    data = request.get_json()
+class Divide(Resource):
+    pass
 
-    try:
-        x = float(data['x'])
-        y = float(data['y'])
-    except Exception as e:
-        print(e)
-        return "ERROR", 305
 
-    z = x + y
-
-    json_data = {
-        "z": z
-    }
-    return jsonify(json_data), 200
+api.add_resource(Add, "/add")
 
 
 if __name__ == '__main__':
