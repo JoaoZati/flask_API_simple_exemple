@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 
 app = Flask(__name__)
 
@@ -37,6 +37,25 @@ def simple_json():
         ]
     }
     return jsonify(json_ex)
+
+
+@app.route('/add_two_numbers', methods=["POST"])
+def add_two_numbers():
+    data = request.get_json()
+
+    try:
+        x = float(data['x'])
+        y = float(data['y'])
+    except Exception as e:
+        print(e)
+        return "ERROR", 305
+
+    z = x + y
+
+    json_data = {
+        "z": z
+    }
+    return jsonify(json_data), 200
 
 
 if __name__ == '__main__':
