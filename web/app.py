@@ -1,8 +1,27 @@
 from flask import Flask, jsonify, request
 from flask_restful import Api, Resource
 
+from pymongo import MongoClient
+
 app = Flask(__name__)
 api = Api(app)
+
+client = MongoClient("mongodb://db:27017")  # same name in docker compose
+db = client.site_db
+num_users = db['UserNum']
+
+num_users.insert_one(
+    {
+        'num_of_users': 0
+    }
+)
+
+
+class Visit(Resource):
+    def get(self):
+        views_num = num_users.find({})[0]['num_of_users'] + 1
+        num_users.update_one({}, {"$set": {"num_of_users": views_num}})
+        return str(f"Hello user {views_num}")
 
 
 @app.route('/')
@@ -116,6 +135,7 @@ api.add_resource(Add, "/add")
 api.add_resource(Subtract, "/subtract")
 api.add_resource(Multiply, "/multiply")
 api.add_resource(Divide, "/divide")
+api.add_resource(Visit, "/visit")
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
